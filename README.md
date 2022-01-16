@@ -1,4 +1,4 @@
-# News4u
+# In The Loop
 Live website: https://cra-cloud-run-c46fgbbxta-ue.a.run.app/
 
 This is our project for nwHacks 2022. The application fetches news articles based on the 3 most popular (highest trending) date ranges of the given time range for the given keywords. We analyze the news articles to get a sentiment score.
