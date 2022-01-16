@@ -14,6 +14,7 @@ const Chart = ({trendData, keyword}) => {
 
     const parseTrendData = () => {
         if (trendData.length === 0) return
+        console.log(trendData)
         let peakSet = getPeakStartDates()
         let dates = []
         let trendVal = []
@@ -75,31 +76,35 @@ const Chart = ({trendData, keyword}) => {
 
     return (
         <div>
-            <Plot id='chart'
-                data={[
-                    {
-                        x: dates,
-                        y: trendVal,
-                        type: 'bar',
-                        mode: 'bar+markers',
-                        marker: {color: colors}
-                    }
-                ]}
-                layout={{
-                    autosize: true,
-                    width: 1200,
-                    height: 600,
-                    title: {
-                        text: title
-                    },
-                    yaxis: {
-                        title: {
-                            text: 'Interest Over Time'
+            { 
+                trendData.length === 0 ? 
+                <div/> :
+                <Plot id='chart'
+                    data={[
+                        {
+                            x: dates,
+                            y: trendVal,
+                            type: 'bar',
+                            mode: 'bar+markers',
+                            marker: {color: colors}
                         }
-                    },
-                    annotations: annotation
-                }}
-            />
+                    ]}
+                    layout={{
+                        autosize: true,
+                        width: 1200,
+                        height: 600,
+                        title: {
+                            text: title
+                        },
+                        yaxis: {
+                            title: {
+                                text: 'Interest Over Time'
+                            }
+                        },
+                        annotations: annotation
+                    }}
+                />
+            }
         </div>
     )
 
