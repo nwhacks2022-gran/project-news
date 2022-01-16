@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import './App.css'
 import ArticlePopup from './ArticleDialog';
 import Article from './Article';
+import Chart from './Chart';
 
 const axios = require('axios');
 
@@ -14,6 +15,8 @@ const App = () => {
   const [beforeDate, setBeforeDate] = useState()
   const [afterDate, setAfterDate] = useState()
   const [articles, setArticles] = useState([])
+  const [trends, setTrends] = useState([])
+
 
   const onSubmit = async () => {
 
@@ -57,6 +60,47 @@ const App = () => {
     // setIsFetching(true)
     // const response = await fetch(customUrl)
     // setIsFetching(false)
+  }
+
+  const onSubmitTrends = async () => {
+
+    // attempt to contact API; send parameters
+    // use isFetching to determine loading state
+
+    const params = {
+      keywords,
+      beforeDate,
+      afterDate
+    }
+
+    const GET_TRENDS_ENDPOINT = "get/trends";
+
+    const customUrl = apiUrl + GET_TRENDS_ENDPOINT
+    //const customUrl = `${apiUrl}/get/trends?keywords=${keywords}&beforeDate=${beforeDate}&afterDate=${afterDate}`
+    console.log(customUrl)
+
+    setIsFetching(true)
+
+    axios.get(customUrl, {
+      params: {
+        keywords: keywords,
+        date: beforeDate + "," + afterDate
+      }
+
+    }).then(function (response) {
+      //response.data is the raw article data:
+      console.log(response.data)
+      setTrends(response.data)
+
+    }).catch(function (error) {
+      console.log(error);
+
+    }).then(function (finalReponse) {
+      console.log(finalReponse);
+    });
+
+    setIsFetching(false)
+
   }
 
   const parseArticleData = (responseJson) => {
@@ -109,9 +153,11 @@ const App = () => {
             <input id="date-before" className="date-picker" type="date" onChange={e => setBeforeDate(e.target.value)} />
             <input id="date-after" className="date-picker" type="date" onChange={e => setAfterDate(e.target.value)} />
           </div>
-          <button id="submit" onClick={onSubmit}>Submit</button>
+          <button id="submit" onClick={onSubmitTrends}>Submit</button>
           <SetArticlePopups></SetArticlePopups>
         </div>
+
+        <Chart trendData={trends}/>
       </header>
     </div>
   )
