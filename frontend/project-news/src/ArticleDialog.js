@@ -28,7 +28,6 @@ const getAuthor = (author) => {
 
 }
 const getFormattedDate = (date) => {
-    console.log('getFormattedDate: ', date);
     let dateOptions = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
 
     const dateObject = new Date(date);

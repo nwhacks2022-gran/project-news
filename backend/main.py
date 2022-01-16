@@ -41,6 +41,7 @@ def get_news_articles():
 
   request_url = 'http://api.mediastack.com/v1/news'
   access_key = os.getenv('MEDIASTACK_API_ACCESS_KEY')
+
   NUMBER_ARTICLES_LIMIT = 5 #change this to 5
   LANGUAGES = 'en'
   SORT = 'popularity'
@@ -57,7 +58,7 @@ def get_news_articles():
     'limit': NUMBER_ARTICLES_LIMIT,
     'languges': LANGUAGES,
     'sort': SORT
-  } 
+  }
 
   encoded_query = urllib.parse.urlencode(query)
   response = requests.get(request_url, params=encoded_query)
@@ -118,3 +119,4 @@ def calculate_sentiment(article):
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000)
+    #app.run(debug=True, host="0.0.0.0", port=int(os.environ.get("PORT", 8080)))
