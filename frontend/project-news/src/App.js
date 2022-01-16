@@ -5,8 +5,6 @@ import Article from './Article';
 
 const axios = require('axios');
 
-// TODO: url for our python API
-//const apiUrl = `http://localhost:5000/`
 const apiUrl = 'https://news4ubackend-7ifydvqqkq-ue.a.run.app/'
 
 const App = () => {
@@ -44,11 +42,8 @@ const App = () => {
       }
 
     }).then(function (response) {
-      //console.log(response.data);
-      //response.data is the raw trends data:
 
       const dateRanges = response.data['top_dates'];
-      //console.log('dataranges: ', dateRanges);
       setDateRanges(dateRanges);
 
       let allNewsArticles = [];
@@ -100,7 +95,6 @@ const App = () => {
     data.forEach((article) => {
       let articleObject = new Article(article['author'], article['title'], article['url'], article['source'], article['image'], article['published_at'], article['category'], article['magnitude'], dateRange, article['sentiment']);
 
-      //console.log(articleObject.dateRange);
       articleObjects.push(articleObject)
 
     });

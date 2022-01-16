@@ -42,7 +42,7 @@ def get_news_articles():
   request_url = 'http://api.mediastack.com/v1/news'
   access_key = os.getenv('MEDIASTACK_API_ACCESS_KEY')
 
-  NUMBER_ARTICLES_LIMIT = 5 #change this to 5
+  NUMBER_ARTICLES_LIMIT = 5
   LANGUAGES = 'en'
   SORT = 'popularity'
   
@@ -64,7 +64,6 @@ def get_news_articles():
   response = requests.get(request_url, params=encoded_query)
   return parse_articles(response.json(), date), 200
   #TODO: error handlings
-  #now, use this list of articles to make call to scrape the article
 
 def parse_articles(response_json, date):
     data = response_json['data']
@@ -84,14 +83,8 @@ def parse_articles(response_json, date):
         sentiment = calculate_sentiment(web_article)
         articleObj.set_sentiment(sentiment['score'])
         articleObj.set_magnitude(sentiment['magnitude']) 
-        #change back into json
-        #print('json version: ', Article.article_to_json(articleObj))
         jsonObjects.append(Article.article_to_json(articleObj))
 
-    #jsonObjects = json.dumps(jsonObjects)
-
-    #change the article objects back into json
-    
     finalJson = {
       'data': jsonObjects
     }
@@ -118,5 +111,5 @@ def calculate_sentiment(article):
 
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000)
-    #app.run(debug=True, host="0.0.0.0", port=int(os.environ.get("PORT", 8080)))
+    #app.run(host='0.0.0.0', port=5000)
+    app.run(debug=True, host="0.0.0.0", port=int(os.environ.get("PORT", 8080)))
