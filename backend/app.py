@@ -53,11 +53,12 @@ def get_news_articles():
   return response.json(), 200
 
 def parse_articles(response_json):
+
     data = response_json['data']
     articles_objects = []
 
     for article in data:
-        article_object = Article(article['author'], article['title'], article['url'],article['source'],article['image'],article['published_at'],article['category'])
+        article_object = Article(article['author'], article['title'], article['url'],article['source'],article['image'],article['published_at'],article['category'],article['date_range'])
         articles_objects.append(article_object)
 
     for articleObj in articles_objects:
@@ -65,15 +66,29 @@ def parse_articles(response_json):
         web_article = Article3k(articleObj.url)
         web_article.download()
         web_article.parse()
-        sentiment_score = calculate_sentiment(web_article.text)
-        articleObj.set_sentiment(sentiment_score)
+        sentiment = calculate_sentiment(web_article)
+        articleObj.set_sentiment(sentiment['score'])
+        articleObj.set_magnitude(sentiment['magnitude'])
 
     return 'Good job!'
 
 
-def calculate_sentiment(url):
-    # make call to google cloud
-    return 0.2
+def calculate_sentiment(article):
+  # make call to google cloud
+  gapi_key = os.getenv('GOOGLE_API_ACCESS_KEY')
+  gcloudUrl = 'https://language.googleapis.com/v1beta2/documents:analyzeSentiment?key=' + gapi_key
+  params = {
+      "document": {
+        "type": "PLAIN_TEXT",
+        "language": "en",
+        "content": article.text
+      } 
+    }
+
+  response = requests.post(gcloudUrl, json=params)
+  sentiment = json.loads(response.content)['documentSentiment']
+  
+  return sentiment
 
 
 def get_google_trends(keywords, dates):
@@ -95,5 +110,5 @@ def get_google_trends(keywords, dates):
 
 
 if __name__ == '__main__':
-    print(get_google_trends(['bitcoin'], '2022-01-01,2022-01-12'))
-    # app.run(host='0.0.0.0', port=5000)
+    # print(get_google_trends(['bitcoin'], '2022-01-01,2022-01-12'))
+    app.run(host='0.0.0.0', port=5000)
