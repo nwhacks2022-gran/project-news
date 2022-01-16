@@ -19,8 +19,9 @@ class Article(object):
             'url': article.url,
             'source': article.source,
             'image': article.image,
-            'published_date': article.published_date,
+            'published_date': article.published_at,
             'category': article.category,
+            'date_range': article.date_range,
             'sentiment': article.sentiment,
             'magnitude': article.magnitude
         }
@@ -42,6 +43,7 @@ class Article(object):
            "image":"https://cdn.cnn.com/cnnnext/dam/assets/210219101515-03-aus-open-0219-daniil-medvedev-super-169.jpg",
            "published_at":"2021-04-19T17:05:31+00:00",
            "category":"sports",
+           "date_range": "2021-01-01, 2021-02-02",
            "sentiment": "0"
         }
     """

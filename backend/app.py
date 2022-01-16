@@ -41,7 +41,9 @@ def get_news_articles():
 
   request_url = 'http://api.mediastack.com/v1/news'
   access_key = os.getenv('MEDIASTACK_API_ACCESS_KEY')
-  NUMBER_ARTICLES_LIMIT = 25
+  NUMBER_ARTICLES_LIMIT = 5 #change this to 5
+  LANGUAGES = 'en'
+  SORT = 'popularity'
   
   keywords = request_args['keywords'] #TODO: not working with mulitple keywords
   print('keywords: ', keywords)
@@ -53,25 +55,25 @@ def get_news_articles():
     'keywords':  keywords,
     'date': date,
     'limit': NUMBER_ARTICLES_LIMIT,
+    'languges': LANGUAGES,
+    'sort': SORT
   } 
 
   encoded_query = urllib.parse.urlencode(query)
   response = requests.get(request_url, params=encoded_query)
-  parsed_articles = parse_articles(response.json())
-  # TODO: error handlings
+  return parse_articles(response.json(), date), 200
+  #TODO: error handlings
   #now, use this list of articles to make call to scrape the article
-  #return "good request!"
-  return response.json(), 200
 
-
-def parse_articles(response_json):
-
+def parse_articles(response_json, date):
     data = response_json['data']
     articles_objects = []
 
     for article in data:
-        article_object = Article(article['author'], article['title'], article['url'],article['source'],article['image'],article['published_at'],article['category'],article['date_range'])
+        article_object = Article(article['author'], article['title'], article['url'],article['source'],article['image'],article['published_at'],article['category'], date)
         articles_objects.append(article_object)
+
+    jsonObjects = []
 
     for articleObj in articles_objects:
         # grab article text using newspaper3k
@@ -80,9 +82,20 @@ def parse_articles(response_json):
         web_article.parse()
         sentiment = calculate_sentiment(web_article)
         articleObj.set_sentiment(sentiment['score'])
-        articleObj.set_magnitude(sentiment['magnitude'])
+        articleObj.set_magnitude(sentiment['magnitude']) 
+        #change back into json
+        #print('json version: ', Article.article_to_json(articleObj))
+        jsonObjects.append(Article.article_to_json(articleObj))
 
-    return 'Good job!'
+    #jsonObjects = json.dumps(jsonObjects)
+
+    #change the article objects back into json
+    
+    finalJson = {
+      'data': jsonObjects
+    }
+
+    return json.dumps(finalJson)
 
 
 def calculate_sentiment(article):

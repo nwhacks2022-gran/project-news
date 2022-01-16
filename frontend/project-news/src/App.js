@@ -14,6 +14,7 @@ const App = () => {
   const [beforeDate, setBeforeDate] = useState()
   const [afterDate, setAfterDate] = useState()
   const [articles, setArticles] = useState([])
+  const [dateRanges, setDateRanges] = useState([])
 
   const onSubmit = async () => {
 
@@ -27,30 +28,63 @@ const App = () => {
     }
 
     const GET_ARTICLES_ENDPOINT = "getarticles";
+    //localhost:5000/get/trends?keywords=bitcoin&date=2022-01-01,2022-01-12
 
-    const customUrl = apiUrl + GET_ARTICLES_ENDPOINT
+    const customFetchArticlesUrl = apiUrl + GET_ARTICLES_ENDPOINT
     //const customUrl = `${apiUrl}/getarticles?keywords=${keywords}&beforeDate=${beforeDate}&afterDate=${afterDate}`
-    console.log(customUrl)
 
     setIsFetching(true)
 
-    axios.get(customUrl, {
+    const GET_TRENDS_DATERANGES = "get/trends";
+    const customFetchDateRangesUrl = apiUrl + GET_TRENDS_DATERANGES
+
+    axios.get(customFetchDateRangesUrl, {
       params: {
         keywords: keywords,
         date: beforeDate + "," + afterDate
       }
 
     }).then(function (response) {
-      console.log(response.data);
-      //response.data is the raw article data:
-      const articleObjects = parseArticleData(response.data)
+      //console.log(response.data);
+      //response.data is the raw trends data:
+
+      const dateRanges = response.data['top_dates'];
+      //console.log('dataranges: ', dateRanges);
+      setDateRanges(dateRanges);
+
+      let allNewsArticles = [];
+
+      dateRanges.forEach((dateRange) => {
+        
+        axios.get(customFetchArticlesUrl, {
+          params: {
+            keywords: keywords,
+            date: dateRange
+          }
+
+        }).then(function (response) {
+          //response.data is the raw article data:
+
+          allNewsArticles.push(parseArticleData(response.data, dateRange))
+
+        }).catch(function (error) {
+          console.log(error);
+
+        }).then(function (finalReponse) {
+          console.log(finalReponse);
+        });
+      });
+
+      console.log(allNewsArticles)
+      setArticles(allNewsArticles);
 
     }).catch(function (error) {
       console.log(error);
 
     }).then(function (finalReponse) {
       console.log(finalReponse);
-    });
+    })
+
 
     setIsFetching(false)
 
@@ -59,37 +93,42 @@ const App = () => {
     // setIsFetching(false)
   }
 
-  const parseArticleData = (responseJson) => {
+  const parseArticleData = (responseJson, dateRange) => {
     const data = responseJson['data']
     let articleObjects = []
 
     data.forEach((article) => {
+      let articleObject = new Article(article['author'], article['title'], article['url'], article['source'], article['image'], article['published_at'], article['category'], article['magnitude'], dateRange, article['sentiment']);
 
-      let articleObject = new Article(article['author'], article['title'], article['url'], article['source'], article['image'], article['published_at'], article['category'])
+      //console.log(articleObject.dateRange);
       articleObjects.push(articleObject)
 
     });
 
-    setArticles(articleObjects);
+    return articleObjects;
+
   }
 
   const SetArticlePopups = () => {
+    let index = 1;
+    let listOfArticlesGroups = [];
 
-    let articlePopupButtons = [];
+    if (articles !== []) {
 
-    const params = {
-      articles,
-    };
+      for (let i = 0; i < articles.length; i++) {
+        const articleGroup = articles[i];
+        let dateRange = dateRanges[i].split(",");
 
-    if (articles !== []) {      
+        let finalArticleGroup = [];
+        articleGroup.forEach((article) => {
+          finalArticleGroup.push(ArticlePopup(article, index));
+          index++;
+        });
 
-      articles.forEach((article) => {
+        listOfArticlesGroups.push(<div>Date Range of: {dateRange[0] + ' to ' + dateRange[1]} <div>{finalArticleGroup}</div></div>);
+      }
 
-        articlePopupButtons.push(ArticlePopup(article));
-      });
-
-      return <div>{articlePopupButtons}</div>;
-
+      return listOfArticlesGroups;
     } else {
       return <div></div>
     }
@@ -110,6 +149,12 @@ const App = () => {
             <input id="date-after" className="date-picker" type="date" onChange={e => setAfterDate(e.target.value)} />
           </div>
           <button id="submit" onClick={onSubmit}>Submit</button>
+          <div style={{ color: 'white', fontSize: '20px' }}>
+            Colour key for Sentiment:<br></br>
+            <div style={{ color: 'red', fontSize: '20px' }}>Red: Sentiment is below -0.5 <br></br></div>
+            <div style={{ color: 'orange', fontSize: '20px' }}>Orange: Sentiment is between -0.5 and 0.5<br></br></div>
+            <div style={{ color: 'green', fontSize: '20px' }}>Green: Sentiment is above 0.5</div>
+          </div>
           <SetArticlePopups></SetArticlePopups>
         </div>
       </header>
