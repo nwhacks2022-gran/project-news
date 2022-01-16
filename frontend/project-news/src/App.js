@@ -53,10 +53,11 @@ const App = () => {
       setDateRanges(dateRanges);
 
       let allNewsArticles = [];
+      let promises = [];
 
       dateRanges.forEach((dateRange) => {
-        
-        axios.get(customFetchArticlesUrl, {
+
+        promises.push(axios.get(customFetchArticlesUrl, {
           params: {
             keywords: keywords,
             date: dateRange
@@ -72,21 +73,21 @@ const App = () => {
 
         }).then(function (finalReponse) {
           console.log(finalReponse);
-        });
+        }));
+
       });
 
-      console.log(allNewsArticles)
-      setArticles(allNewsArticles);
+      Promise.all(promises).then(() => {
+        console.log(allNewsArticles)
+        setArticles(allNewsArticles);
+        setIsFetching(false)
+      });
 
     }).catch(function (error) {
       console.log(error);
 
     }).then(function (finalReponse) {
-      console.log(finalReponse);
-    })
-
-
-    setIsFetching(false)
+    });
 
     // setIsFetching(true)
     // const response = await fetch(customUrl)
@@ -110,7 +111,6 @@ const App = () => {
   }
 
   const SetArticlePopups = () => {
-    let index = 1;
     let listOfArticlesGroups = [];
 
     if (articles !== []) {
@@ -120,6 +120,7 @@ const App = () => {
         let dateRange = dateRanges[i].split(",");
 
         let finalArticleGroup = [];
+        let index = Math.floor(Math.random() * (1000000 - 1 + 1) + 1)
         articleGroup.forEach((article) => {
           finalArticleGroup.push(ArticlePopup(article, index));
           index++;

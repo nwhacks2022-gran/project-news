@@ -19,7 +19,7 @@ class Article(object):
             'url': article.url,
             'source': article.source,
             'image': article.image,
-            'published_date': article.published_at,
+            'published_at': article.published_at,
             'category': article.category,
             'date_range': article.date_range,
             'sentiment': article.sentiment,
