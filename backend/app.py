@@ -7,10 +7,12 @@ from Article import Article
 from newspaper import Article as Article3k
 
 from flask import Flask, jsonify, request
-from dotenv import load_dotenv
+# from dotenv import load_dotenv
 from flask_cors import CORS
 
-load_dotenv()
+from pytrends.request import TrendReq
+
+# load_dotenv()
 
 app = Flask(__name__)
 cors = CORS(app)
@@ -74,5 +76,24 @@ def calculate_sentiment(url):
     return 0.2
 
 
+def get_google_trends(keywords, dates):
+    """
+
+    :param keywords:
+    :param dates: 'YYYY-MM-DD, YYYY_MM-DD'
+    :return:
+    """
+
+    timeframe = dates.replace(',', ' ')
+    print(timeframe)
+
+    py_trends = TrendReq(hl='en-US', tz=360)
+    py_trends.build_payload(keywords, cat=0, timeframe=timeframe, geo='', gprop='')
+    trends_df = py_trends.interest_over_time()
+    trends_df = trends_df.drop(columns='isPartial')
+    return trends_df.to_json()
+
+
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000)
+    print(get_google_trends(['bitcoin'], '2022-01-01,2022-01-12'))
+    # app.run(host='0.0.0.0', port=5000)
