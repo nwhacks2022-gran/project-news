@@ -1,11 +1,13 @@
 import os
 import requests
 import urllib.parse
+import json
 from Article import Article
 from newspaper import Article as Article3k
 from flask import Flask, jsonify, request
 from dotenv import load_dotenv
 from flask_cors import CORS
+from trends import get_google_trends, get_top_k_dates
 
 load_dotenv()
 
@@ -17,6 +19,20 @@ app.config['CORS_HEADERS'] = 'Content-Type'
 @app.route('/hello/', methods=['GET', 'POST'])
 def welcome():
     return "hello!"
+
+
+@app.route('/get/trends')
+def get_trends():
+    request_args = request.args
+    keywords = request_args['keywords']
+    date = request_args['date']
+    trends_df = get_google_trends(keywords, date)
+    top_k_dates = get_top_k_dates(trends_df, k=3)
+    trends_df.index = trends_df.index.strftime('%Y-%m-%d')
+    trends_json = json.loads(trends_df.to_json())
+    trends_json.update({'top_dates': top_k_dates})
+
+    return trends_json, 200
 
 
 @app.route('/getarticles')
@@ -46,6 +62,7 @@ def get_news_articles():
   #now, use this list of articles to make call to scrape the article
   #return "good request!"
   return response.json(), 200
+
 
 def parse_articles(response_json):
 
