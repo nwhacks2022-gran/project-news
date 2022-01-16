@@ -140,8 +140,8 @@ const App = () => {
               placeholder="Enter keyword"
               onChange={e => setKeywords(encodeURIComponent(e.target.value))} />
             <div className="date-container">
-              <input id="date-before" className="date-picker" type="date" onChange={e => setBeforeDate(e.target.value)} />
-              <input id="date-after" className="date-picker" type="date" onChange={e => setAfterDate(e.target.value)} />
+              <input id="date-before" className="date-picker" type="date" placeholder="yyyy-mm-dd" onChange={e => setBeforeDate(e.target.value)} />
+              <input id="date-after" className="date-picker" type="date" placeholder="yyyy-mm-dd" onChange={e => setAfterDate(e.target.value)} />
             </div>
             <button id="submit" onClick={onSubmit}>Submit</button>
             <div style={{ color: 'white', fontSize: '20px' }}>
