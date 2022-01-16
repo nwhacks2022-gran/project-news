@@ -8,7 +8,8 @@ const Chart = ({trendData}) => {
     const [colors, setColors] = useState([])
     const [peakDateSet, setPeakDates] = useState(new Set());
     const [peakXY, setPeakMap] = useState({});
-    const [annotations, setAnnotations] = useState([])
+    const [layout, setLayout] = useState({})
+    const [ignore, forceUpdate] = useState(0);
 
     const defaultColor = 'blue'
     const peakColor = 'red'
@@ -21,7 +22,6 @@ const Chart = ({trendData}) => {
         let trendVal = []
         let colors = []
         let peakMap = {}
-        console.log(trendData.keyword)
         for (const[date, val] of Object.entries(trendData.keyword)) {
             dates.push(date)
             trendVal.push(val)
@@ -38,7 +38,7 @@ const Chart = ({trendData}) => {
         setTrendVal(trendVal)
         setColors(colors)
         setPeakMap(peakMap)
-        annotatePeaks()
+        forceUpdate(ignore + 1)
     }
 
     const annotatePeaks = () => {
@@ -57,8 +57,11 @@ const Chart = ({trendData}) => {
             })
             idx++
         }
-
-        setAnnotations(annotations)
+        let newLayout = {'annotations': annotations}
+        if (annotations.length !== layout.length) {
+            setLayout(newLayout)
+        }
+        return newLayout
     }
 
     const getPeakStartDates = () => {
@@ -72,9 +75,13 @@ const Chart = ({trendData}) => {
 
     useEffect(() => {
         parseTrendData()
-    }, [])
+        annotatePeaks()
+    }, [trendData])
 
-  
+    useEffect(() => {
+        annotatePeaks()
+    }, [ignore])
+
 
     return (
         <Plot
@@ -87,9 +94,7 @@ const Chart = ({trendData}) => {
                     marker: {color: colors}
                 }
             ]}
-            layout={{
-                annotations: annotations
-            }}
+            layout={{layout}}
         />
     )
 
