@@ -2,7 +2,9 @@ import os
 import requests
 import urllib.parse
 import json
+
 from Article import Article
+from newspaper import Article as Article3k
 
 from flask import Flask, jsonify, request
 from dotenv import load_dotenv
@@ -50,6 +52,20 @@ def parse_articles(response_json):
   for article in data:
     article_object = Article(article['author'], article['title'], article['url'],article['source'],article['image'],article['published_at'],article['category'])
     articles_objects.append(article_object)
+
+  for articleObj in articles_objects:
+    # grab article text using newspaper3k
+    webArticle = Article3k(articleObj.url)
+    webArticle.download()
+    webArticle.parse()
+    sentiment_score = calculate_sentiment(webArticle.text) 
+    articleObj.set_sentiment(sentiment_score)
+
+  return 'Good job!'
+
+def calculate_sentiment(url):
+  # make call to google cloud
+  return 0.2
 
 
 if __name__ == '__main__':

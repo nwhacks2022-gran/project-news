@@ -1,13 +1,13 @@
 class Article(object):
 
     def __init__(self, author, title, url, source, image, published_at, category):
-        self.author = author,
-        self.title = title,
-        self.url = url,
-        self.source = source,
-        self.image = image,
-        self.published_at = published_at,
-        self.category = category,
+        self.author = author
+        self.title = title
+        self.url = url
+        self.source = source
+        self.image = image
+        self.published_at = published_at
+        self.category = category
         self.sentiment = 0 #initially it's 0
 
 
@@ -23,10 +23,9 @@ class Article(object):
             'sentiment': article.sentiment
         }
 
-    def set_sentiment(article, sentiment):
-        article.sentiment = sentiment
-
-
+    def set_sentiment(self, sentiment):
+        self.sentiment = sentiment
+    
     #mock data object for development
 #     {
 #    "author":null,
