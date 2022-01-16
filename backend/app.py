@@ -43,9 +43,10 @@ def get_news_articles():
   encoded_query = urllib.parse.urlencode(query)
   response = requests.get(request_url, params=encoded_query)
   parsed_articles = parse_articles(response.json())
+  #TODO: error handlings
   #now, use this list of articles to make call to scrape the article
   #return "good request!"
-  return 'successfully gotten articles!', 200 
+  return response.json(), 200
 
 def parse_articles(response_json):
   data = response_json['data']
