@@ -6,7 +6,9 @@ import Article from './Article';
 const axios = require('axios');
 
 // TODO: url for our python API
-const apiUrl = `http://localhost:5000/`
+//const apiUrl = `http://localhost:5000/`
+const apiUrl = 'https://news4ubackend-7ifydvqqkq-ue.a.run.app/'
+
 const App = () => {
 
   const [keywords, setKeywords] = useState([])
@@ -26,17 +28,14 @@ const App = () => {
       beforeDate,
       afterDate
     }
-
+    
     const GET_ARTICLES_ENDPOINT = "getarticles";
-    //localhost:5000/get/trends?keywords=bitcoin&date=2022-01-01,2022-01-12
-
     const customFetchArticlesUrl = apiUrl + GET_ARTICLES_ENDPOINT
-    //const customUrl = `${apiUrl}/getarticles?keywords=${keywords}&beforeDate=${beforeDate}&afterDate=${afterDate}`
-
-    setIsFetching(true)
 
     const GET_TRENDS_DATERANGES = "get/trends";
     const customFetchDateRangesUrl = apiUrl + GET_TRENDS_DATERANGES
+
+    setIsFetching(true)
 
     axios.get(customFetchDateRangesUrl, {
       params: {
@@ -120,13 +119,13 @@ const App = () => {
         let dateRange = dateRanges[i].split(",");
 
         let finalArticleGroup = [];
-        let index = Math.floor(Math.random() * (1000000 - 1 + 1) + 1)
         articleGroup.forEach((article) => {
+          let index = Math.floor(Math.random() * (1000000 - 1 + 1) + 1)
           finalArticleGroup.push(ArticlePopup(article, index));
-          index++;
         });
 
-        listOfArticlesGroups.push(<div>Date Range of: {dateRange[0] + ' to ' + dateRange[1]} <div>{finalArticleGroup}</div></div>);
+        let anotherIndex = Math.floor(Math.random() * (1000000 - 1 + 1) + 1)
+        listOfArticlesGroups.push(<div key={anotherIndex}>Date Range of: {dateRange[0] + ' to ' + dateRange[1]} <div>{finalArticleGroup}</div></div>);
       }
 
       return listOfArticlesGroups;
