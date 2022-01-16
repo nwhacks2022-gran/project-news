@@ -1,0 +1,47 @@
+.flex-row {
+    display: flex;
+    flex-direction: row;
+}
+
+.space-between {
+    justify-content: space-between;
+}
+
+.wrap {
+    flex-wrap: wrap;
+}
+
+.date-toggle {
+    padding: 10px 25px;
+    background-color: rgb(36, 119, 111);
+    border-top-left-radius: 12px;
+    border-top-right-radius: 12px;
+}
+
+.date-toggle:hover {
+    cursor: pointer;
+}
+
+.space-around {
+    justify-content: space-around;
+}
+.newscard-container {
+    margin-top: 40px;
+}
+
+.cluster-container {
+    margin-bottom: 25px;
+}
+
+.icon {
+    height: 30px;
+    width: 30px;
+    margin-top: 6px;
+    filter: invert(100%) sepia(100%) saturate(29%) hue-rotate(134deg) brightness(108%) contrast(106%);
+}
+
+
+.rotate {
+    transform: rotate(180deg);
+    margin-top: 12px;
+}

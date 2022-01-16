@@ -16,6 +16,7 @@
   justify-content: center;
   font-size: calc(10px + 2vmin);
   color: white;
+  padding-bottom: 200px;
 }
 
 .App-link {
@@ -30,4 +31,12 @@ input {
 
 #keyword-text{
   width:1000px;
+}
+
+.input-container {
+  margin-bottom: 25px;
+}
+
+.container {
+  width: 70%;
 }

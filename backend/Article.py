@@ -19,8 +19,9 @@ class Article(object):
             'url': article.url,
             'source': article.source,
             'image': article.image,
-            'published_date': article.published_date,
+            'published_at': article.published_at,
             'category': article.category,
+            'date_range': article.date_range,
             'sentiment': article.sentiment,
             'magnitude': article.magnitude
         }
@@ -30,18 +31,3 @@ class Article(object):
     
     def set_magnitude(self, magnitude):
         self.magnitude = magnitude
-
-    """
-    mock data object for development
-        {
-           "author":null,
-           "title":"Daniil Medvedev advances to debut Australian Open final with dominant win over Stefanos Tsitsipas",
-           "description":"Daniil Medvedev produced an impressive display against world No. 6 Stefanos Tsitsipas to advance to the final of the Australian Open.",
-           "url":"http://rss.cnn.com/~r/rss/edition_tennis/~3/TAY2kwpOFbs/index.html",
-           "source":"CNN Tennis",
-           "image":"https://cdn.cnn.com/cnnnext/dam/assets/210219101515-03-aus-open-0219-daniil-medvedev-super-169.jpg",
-           "published_at":"2021-04-19T17:05:31+00:00",
-           "category":"sports",
-           "sentiment": "0"
-        }
-    """
