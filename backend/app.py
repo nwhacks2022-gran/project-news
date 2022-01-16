@@ -8,29 +8,30 @@ from newspaper import Article as Article3k
 
 from flask import Flask, jsonify, request
 from dotenv import load_dotenv
+from flask_cors import CORS
 
 load_dotenv()
 
 app = Flask(__name__)
+cors = CORS(app)
+app.config['CORS_HEADERS'] = 'Content-Type'
 
 @app.route('/hello/', methods=['GET', 'POST'])
 def welcome():
-    return "Hello World!"
+    return "hello!"
 
 @app.route('/getarticles')
 def get_news_articles():
-  # request_data = request.data
-  # print('request_data: ', request_data) #not gonna work now since there's no frontend
-  # request_args = request.args
-  # print('request_args: ', request_args) #not gonna work now since there's no frontend
+  request_args = request.args
 
   request_url = 'http://api.mediastack.com/v1/news'
   access_key = os.getenv('MEDIASTACK_API_ACCESS_KEY')
   NUMBER_ARTICLES_LIMIT = 25
-  print('access key: ', access_key) 
   
-  keywords = 'tennis canada' #TODO: not working with mulitple keywords
-  date = '2021-11-12,2021-12-01'
+  keywords = request_args['keywords'] #TODO: not working with mulitple keywords
+  print('keywords: ', keywords)
+  date = request_args['date']
+  print('date: ', date)  
 
   query = { 
     'access_key': access_key,
@@ -42,8 +43,9 @@ def get_news_articles():
   encoded_query = urllib.parse.urlencode(query)
   response = requests.get(request_url, params=encoded_query)
   parsed_articles = parse_articles(response.json())
-  #now, use this list of articles to make call to scarpe the article
-  return 'Good request!'
+  #now, use this list of articles to make call to scrape the article
+  #return "good request!"
+  return 'successfully gotten articles!', 200 
 
 def parse_articles(response_json):
   data = response_json['data']

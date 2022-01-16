@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import './App.css'
-
+const axios = require('axios');
 
 // TODO: url for our python API
 const apiUrl = `http://localhost:5000/`
@@ -23,9 +23,32 @@ const App = () => {
       afterDate
     }
 
-    const customUrl = `${apiUrl}?keywords=${keywords}&beforeDate=${beforeDate}&afterDate=${afterDate}`
+    const GET_ARTICLES_ENDPOINT = "getarticles";
+
+    const customUrl = apiUrl + GET_ARTICLES_ENDPOINT
+    //const customUrl = `${apiUrl}/getarticles?keywords=${keywords}&beforeDate=${beforeDate}&afterDate=${afterDate}`
     console.log(customUrl)
 
+    setIsFetching(true)
+
+    axios.get(customUrl, {
+      params: {
+        keywords: keywords,
+        date: beforeDate + "," + afterDate
+      }
+
+    }).then(function(response) {
+      console.log(response.data);
+
+    }).catch(function(error){
+      console.log(error);
+
+    }).then(function() {
+
+    });
+
+    setIsFetching(false)
+    
     // setIsFetching(true)
     // const response = await fetch(customUrl)
     // setIsFetching(false)
