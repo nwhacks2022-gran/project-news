@@ -5,18 +5,19 @@ from utils import timestamp_to_string
 def get_google_trends(keywords, dates):
     """
 
-    :param keywords:
+    :param keywords: lst of keywords
     :param dates: 'YYYY-MM-DD, YYYY_MM-DD'
     :return:
     """
+    if type(keywords) != list:
+        keywords = [keywords]
 
     timeframe = dates.replace(',', ' ')
-    print(timeframe)
-
     py_trends = TrendReq(hl='en-US', tz=360)
     py_trends.build_payload(keywords, cat=0, timeframe=timeframe, geo='', gprop='')
     trends_df = py_trends.interest_over_time()
     trends_df = trends_df.drop(columns='isPartial')
+
     return trends_df
 
 
