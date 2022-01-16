@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import './App.css'
 import ArticlePopup from './ArticleDialog';
 import Article from './Article';
+import Chart from './Chart';
 
 import { NewsCluster } from './components';
 
@@ -16,11 +17,13 @@ const App = () => {
   const [beforeDate, setBeforeDate] = useState()
   const [afterDate, setAfterDate] = useState()
   const [articles, setArticles] = useState([])
+  const [trends, setTrends] = useState([])
   const [dateRanges, setDateRanges] = useState([])
 
   const onSubmit = async () => {
 
     setIsFetching(true)
+    onSubmitTrends()
     // attempt to contact API; send parameters
     // use isFetching to determine loading state
 
@@ -85,6 +88,43 @@ const App = () => {
 
     }).then(function (finalReponse) {
     });
+
+  }
+
+  const onSubmitTrends = async () => {
+
+    // attempt to contact API; send parameters
+    // use isFetching to determine loading state
+    const params = {
+      keywords,
+      beforeDate,
+      afterDate
+    }
+
+    const GET_TRENDS_ENDPOINT = "get/trends";
+    const customUrl = apiUrl + GET_TRENDS_ENDPOINT
+
+    setIsFetching(true)
+
+    axios.get(customUrl, {
+      params: {
+        keywords: keywords,
+        date: beforeDate + "," + afterDate
+      }
+
+    }).then(function (response) {
+      //response.data is the raw article data:
+      console.log(response.data)
+      setTrends(response.data)
+
+    }).catch(function (error) {
+      console.log(error);
+
+    }).then(function (finalReponse) {
+      console.log(finalReponse);
+    });
+
+    setIsFetching(false)
 
   }
 
@@ -158,6 +198,7 @@ const App = () => {
               <div>Loading</div>
             ) :
               <div>
+                {<Chart trendData={trends} keyword={keywords}/>}
                 {
                   dateRanges.length > 0 && articles.length > 0 ? (
                     articles.map((article, index) => <NewsCluster dateRange={dateRanges[index]} articles={article} />)

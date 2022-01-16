@@ -30,6 +30,7 @@ def get_trends():
     top_k_dates = get_top_k_dates(trends_df, k=3)
     trends_df.index = trends_df.index.strftime('%Y-%m-%d')
     trends_json = json.loads(trends_df.to_json())
+    trends_json['keyword'] = trends_json.pop(keywords)
     trends_json.update({'top_dates': top_k_dates})
 
     return trends_json, 200
