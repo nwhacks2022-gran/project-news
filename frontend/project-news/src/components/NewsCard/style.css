@@ -1,0 +1,100 @@
+.card-container {
+    border: 5px solid orange;
+    border-radius: 8px;
+    padding: 15px;
+    width: 40%;
+    min-height: 200px;
+    margin-bottom: 20px;
+}
+
+.card-container:hover {
+    cursor: pointer;
+}
+
+.info-container {
+}
+
+.flex-column {
+    display: flex;
+    flex-direction: column;
+}
+
+.flex-row {
+    display: flex;
+    flex-direction: row;
+}
+
+.space-between {
+    justify-content: space-between;
+}
+
+.source-header {
+    margin-bottom: 20px;
+    font-size: 1.3em;
+    border-bottom: 3px solid orange;
+}
+
+.picture-title {
+    height: 150px;
+    margin-bottom: 20px;
+}
+
+.v-center {
+    align-items: center;
+}
+
+.bold {
+    font-weight: bold;
+}
+
+.title {
+    margin-left: 10px;
+    margin-right: 10px;
+    text-align: center;
+    font-size: 0.65em;
+}
+
+p {
+    margin: 0;
+    font-size: 0.6em;
+}
+
+img {
+    max-width: 150px;
+    width: 100%;
+}
+
+.orange {
+    border-color: orange;
+}
+.orange .source-header {
+    border-color: orange;
+}
+
+.red {
+    border-color: red;
+}
+.red .source-header {
+    border-color: red;
+}
+
+.yellow {
+    border-color: yellow;
+}
+.yellow .source-header {
+    border-color: yellow;
+}
+
+.green {
+    border-color: green;
+}
+.green .source-header {
+    border-color: green;
+}
+
+.blue {
+    border-color: blue;
+}
+.blue .source-header {
+    border-color: blue;
+}
