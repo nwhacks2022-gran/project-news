@@ -3,6 +3,8 @@ import './App.css'
 import ArticlePopup from './ArticleDialog';
 import Article from './Article';
 
+import { NewsCluster } from './components';
+
 const axios = require('axios');
 
 const apiUrl = 'https://news4ubackend-7ifydvqqkq-ue.a.run.app/'
@@ -18,6 +20,7 @@ const App = () => {
 
   const onSubmit = async () => {
 
+    setIsFetching(true)
     // attempt to contact API; send parameters
     // use isFetching to determine loading state
 
@@ -83,9 +86,6 @@ const App = () => {
     }).then(function (finalReponse) {
     });
 
-    // setIsFetching(true)
-    // const response = await fetch(customUrl)
-    // setIsFetching(false)
   }
 
   const parseArticleData = (responseJson, dateRange) => {
@@ -131,25 +131,41 @@ const App = () => {
   return (
     <div className="App">
       <header className="App-header">
-        <h1>News 4 U</h1>
-        <div className="input-container">
-          <input
-            id="keyword-text"
-            className="text-input"
-            placeholder="Separate keywords using commas: hockey, baseball, Blue Jays"
-            onChange={e => setKeywords(encodeURIComponent(e.target.value))} />
-          <div className="date-container">
-            <input id="date-before" className="date-picker" type="date" onChange={e => setBeforeDate(e.target.value)} />
-            <input id="date-after" className="date-picker" type="date" onChange={e => setAfterDate(e.target.value)} />
+        <h1>In The Loop</h1>
+        <div className="container">
+          <div className="input-container">
+            <input
+              id="keyword-text"
+              className="text-input"
+              placeholder="Enter keyword"
+              onChange={e => setKeywords(encodeURIComponent(e.target.value))} />
+            <div className="date-container">
+              <input id="date-before" className="date-picker" type="date" onChange={e => setBeforeDate(e.target.value)} />
+              <input id="date-after" className="date-picker" type="date" onChange={e => setAfterDate(e.target.value)} />
+            </div>
+            <button id="submit" onClick={onSubmit}>Submit</button>
+            <div style={{ color: 'white', fontSize: '20px' }}>
+              Colour key for Sentiment:<br></br>
+              <div style={{ color: 'red', fontSize: '20px' }}>Red: Sentiment is below -0.5 <br></br></div>
+              <div style={{ color: 'orange', fontSize: '20px' }}>Orange: Sentiment is between -0.5 and 0<br></br></div>
+              <div style={{ color: 'yellow', fontSize: '20px' }}>Orange: Sentiment is 0<br></br></div>
+              <div style={{ color: 'blue', fontSize: '20px' }}>Blue: Sentiment is between 0 and 0.5<br></br></div>
+              <div style={{ color: 'green', fontSize: '20px' }}>Green: Sentiment is above 0.5</div>
+            </div>
           </div>
-          <button id="submit" onClick={onSubmit}>Submit</button>
-          <div style={{ color: 'white', fontSize: '20px' }}>
-            Colour key for Sentiment:<br></br>
-            <div style={{ color: 'red', fontSize: '20px' }}>Red: Sentiment is below -0.5 <br></br></div>
-            <div style={{ color: 'orange', fontSize: '20px' }}>Orange: Sentiment is between -0.5 and 0.5<br></br></div>
-            <div style={{ color: 'green', fontSize: '20px' }}>Green: Sentiment is above 0.5</div>
+          <div>
+            {isFetching ? (
+              <div>Loading</div>
+            ) :
+              <div>
+                {
+                  dateRanges.length > 0 && articles.length > 0 ? (
+                    articles.map((article, index) => <NewsCluster dateRange={dateRanges[index]} articles={article} />)
+                  ) : []
+                }
+              </div>
+            }
           </div>
-          <SetArticlePopups></SetArticlePopups>
         </div>
       </header>
     </div>
