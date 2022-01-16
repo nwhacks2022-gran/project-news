@@ -1,23 +1,20 @@
 import React, { useEffect, useState } from 'react'
 import Plot from 'react-plotly.js'
 
-const Chart = ({trendData}) => {
+const Chart = ({trendData, keyword}) => {
 
     const [dates, setDates] = useState([])
     const [trendVal, setTrendVal] = useState([])
     const [colors, setColors] = useState([])
-    const [peakDateSet, setPeakDates] = useState(new Set());
-    const [peakXY, setPeakMap] = useState({});
-    const [layout, setLayout] = useState({})
-    const [ignore, forceUpdate] = useState(0);
+    const [annotation, setAnnotation] = useState({})
+    const [title, setTitle] = useState('')
 
     const defaultColor = 'blue'
     const peakColor = 'red'
 
     const parseTrendData = () => {
         if (trendData.length === 0) return
-
-        getPeakStartDates()
+        let peakSet = getPeakStartDates()
         let dates = []
         let trendVal = []
         let colors = []
@@ -26,7 +23,7 @@ const Chart = ({trendData}) => {
             dates.push(date)
             trendVal.push(val)
 
-            if (peakDateSet.has(date)) {
+            if (peakSet.has(date)) {
                 colors.push(peakColor)
                 peakMap[date] = val
             } else {
@@ -37,14 +34,14 @@ const Chart = ({trendData}) => {
         setDates(dates)
         setTrendVal(trendVal)
         setColors(colors)
-        setPeakMap(peakMap)
-        forceUpdate(ignore + 1)
+        annotatePeaks(peakMap)
+        setTitle('Interest of "' + keyword + '" over time')
     }
 
-    const annotatePeaks = () => {
+    const annotatePeaks = (peaks) => {
         let annotations = []
         let idx = 1;
-        for (const[date, val] of Object.entries(peakXY)) {
+        for (const[date, val] of Object.entries(peaks)) {
             annotations.push({
                 x: date,
                 y: val,
@@ -57,11 +54,9 @@ const Chart = ({trendData}) => {
             })
             idx++
         }
-        let newLayout = {'annotations': annotations}
-        if (annotations.length !== layout.length) {
-            setLayout(newLayout)
+        if (annotations.length !== annotation.length) {
+            setAnnotation(annotations)
         }
-        return newLayout
     }
 
     const getPeakStartDates = () => {
@@ -69,33 +64,43 @@ const Chart = ({trendData}) => {
         for (let peakDateRange of trendData.top_dates) {
             peakSet.add(peakDateRange.split(',')[0])
         }
-
-        setPeakDates(peakSet)
+        return peakSet
     }
 
     useEffect(() => {
         parseTrendData()
-        annotatePeaks()
     }, [trendData])
 
-    useEffect(() => {
-        annotatePeaks()
-    }, [ignore])
 
 
     return (
-        <Plot
-            data={[
-                {
-                    x: dates,
-                    y: trendVal,
-                    type: 'bar',
-                    mode: 'bar+markers',
-                    marker: {color: colors}
-                }
-            ]}
-            layout={{layout}}
-        />
+        <div>
+            <Plot id='chart'
+                data={[
+                    {
+                        x: dates,
+                        y: trendVal,
+                        type: 'bar',
+                        mode: 'bar+markers',
+                        marker: {color: colors}
+                    }
+                ]}
+                layout={{
+                    autosize: true,
+                    width: 1200,
+                    height: 600,
+                    title: {
+                        text: title
+                    },
+                    yaxis: {
+                        title: {
+                            text: 'Interest Over Time'
+                        }
+                    },
+                    annotations: annotation
+                }}
+            />
+        </div>
     )
 
 }

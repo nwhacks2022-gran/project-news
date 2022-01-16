@@ -17,16 +17,13 @@ const App = () => {
   const [beforeDate, setBeforeDate] = useState()
   const [afterDate, setAfterDate] = useState()
   const [articles, setArticles] = useState([])
-<<<<<<< HEAD
   const [trends, setTrends] = useState([])
-
-=======
   const [dateRanges, setDateRanges] = useState([])
->>>>>>> main
 
   const onSubmit = async () => {
 
     setIsFetching(true)
+    onSubmitTrends()
     // attempt to contact API; send parameters
     // use isFetching to determine loading state
 
@@ -98,7 +95,6 @@ const App = () => {
 
     // attempt to contact API; send parameters
     // use isFetching to determine loading state
-
     const params = {
       keywords,
       beforeDate,
@@ -106,10 +102,7 @@ const App = () => {
     }
 
     const GET_TRENDS_ENDPOINT = "get/trends";
-
     const customUrl = apiUrl + GET_TRENDS_ENDPOINT
-    //const customUrl = `${apiUrl}/get/trends?keywords=${keywords}&beforeDate=${beforeDate}&afterDate=${afterDate}`
-    console.log(customUrl)
 
     setIsFetching(true)
 
@@ -205,6 +198,7 @@ const App = () => {
               <div>Loading</div>
             ) :
               <div>
+                {<Chart trendData={trends} keyword={keywords}/>}
                 {
                   dateRanges.length > 0 && articles.length > 0 ? (
                     articles.map((article, index) => <NewsCluster dateRange={dateRanges[index]} articles={article} />)
@@ -213,14 +207,7 @@ const App = () => {
               </div>
             }
           </div>
-<<<<<<< HEAD
-          <button id="submit" onClick={onSubmitTrends}>Submit</button>
-          <SetArticlePopups></SetArticlePopups>
-=======
->>>>>>> main
         </div>
-
-        <Chart trendData={trends}/>
       </header>
     </div>
   )
